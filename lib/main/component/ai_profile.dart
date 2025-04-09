@@ -1,6 +1,7 @@
+import 'package:capstone/main/component/setting_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+//설정 버튼
 class AiProfile extends StatelessWidget {
   const AiProfile({super.key});
 
@@ -24,13 +25,7 @@ class AiProfile extends StatelessWidget {
       ]),
       Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-          child: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.settings,
-                color: Colors.white,
-                size: 30,
-              )))
+          child: SettingMenu())
     ]);
   }
 }

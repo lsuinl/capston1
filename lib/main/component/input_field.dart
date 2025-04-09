@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//메세지 입력, 전송기능, 수시로,
 class InputField extends StatefulWidget {
   const InputField({super.key});
 

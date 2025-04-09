@@ -3,7 +3,7 @@ import 'package:capstone/component/default_layout.dart';
 import 'package:capstone/main/component/ai_profile.dart';
 import 'package:capstone/main/component/chatting.dart';
 import 'package:capstone/main/component/input_field.dart';
-import 'package:capstone/main/component/side_tab.dart';
+import 'package:capstone/tab/component/side_tab.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget {

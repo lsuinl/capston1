@@ -3,6 +3,7 @@ import 'package:capstone/main/component/input_field.dart';
 import 'package:capstone/main/component/input_result.dart';
 import 'package:flutter/material.dart';
 
+//
 class Chatting extends StatefulWidget {
   const Chatting({super.key});
 

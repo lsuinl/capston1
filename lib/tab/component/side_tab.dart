@@ -1,6 +1,8 @@
 import 'package:capstone/component/const.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+//버튼 누르면 탭 나오게,
+//탭마다 누르면 이동하도록. 탭마다 저장된시간 등등 출력
 
 class SideTab extends StatefulWidget {
   const SideTab({super.key});

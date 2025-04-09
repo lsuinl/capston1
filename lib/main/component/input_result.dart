@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-
 import '../../component/const.dart';
 
-class InputResult extends StatefulWidget {
+//퍼센트 결과관련..
+
+class InputResult extends ConsumerWidget {
   const InputResult({super.key});
 
   @override
-  State<InputResult> createState() => _InputResultState();
-}
-
-class _InputResultState extends State<InputResult> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Container(
