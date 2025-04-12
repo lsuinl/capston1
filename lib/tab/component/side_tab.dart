@@ -1,95 +1,105 @@
-import 'package:capstone/component/const.dart';
+import 'package:capstone/main/model/conversations_model.dart';
+import 'package:capstone/main/provider/conversations_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sidebarx/sidebarx.dart';
+import 'package:capstone/component/const.dart';
 
-//버튼 누르면 탭 나오게,
-//탭마다 누르면 이동하도록. 탭마다 저장된시간 등등 출력
+class SideTab extends ConsumerStatefulWidget {
+  final SidebarXController controller;
+  final VoidCallback onPressed;
 
-class SideTab extends StatefulWidget {
-  const SideTab({super.key});
+  const SideTab({required this.controller, required this.onPressed, super.key});
 
   @override
-  State<SideTab> createState() => _SideTabState();
+  ConsumerState<SideTab> createState() => _SideTabState();
 }
 
-class _SideTabState extends State<SideTab> {
-  bool isOpen = false;
+class _SideTabState extends ConsumerState<SideTab> {
+  final List<String> tabTitles = [
+    "탭 1",
+    "탭 2",
+    "탭 3",
+    "탭 4",
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.only(left: 5, top: 10),
-        child: Container(
-            width: 300,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+    final converstionsNotifier = ref.watch(conversationsProvider.notifier);
+    final converstions = ref.watch(conversationsProvider);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SidebarX(
+          showToggleButton: false,
+          controller: widget.controller,
+          theme: SidebarXTheme(
+            decoration: BoxDecoration(
+              color: MAIN_COLOR,
+            ),
+            textStyle: TextStyle(color: SIDE_COLOR),
+            selectedTextStyle: TextStyle(color: Colors.white),
+            itemTextPadding: EdgeInsets.zero,
+            itemPadding: EdgeInsets.symmetric(horizontal: 0),
+            selectedItemDecoration: BoxDecoration(
+              color: SIDE_COLOR.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          extendedTheme: SidebarXTheme(
+            width: 400.w,
+          ),
+          footerBuilder: (context, extended) {
+            return Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: IconButton(
+                    onPressed: () => converstionsNotifier.addMessage(
+                        ConversationsModel(
+                            id: 2,
+                            title: 'gd',
+                            date: DateTime.now().toString())),
+                    color: Colors.white,
+                    icon: Icon(
+                      Icons.add,
+                      size: 30,
+                    )));
+          },
+          headerBuilder: (context, extended) {
+            return Column(children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                      padding: EdgeInsets.only(left: 30),
-                      child: Text(
-                        "Conversations",
-                        style: TextStyle(color: SIDE_COLOR),
+                  widget.controller.extended
+                      ? Expanded(
+                          child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                "Conversations",
+                                style:
+                                    TextStyle(color: SIDE_COLOR, fontSize: 18),
+                              )))
+                      : Container(),
+                  IconButton(
+                      onPressed: widget.onPressed,
+                      color: Colors.white,
+                      icon: Icon(
+                        widget.controller.extended ? Icons.close : Icons.menu,
+                        size: 30,
                       )),
-                  Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: IconButton(
-                        onPressed: () {},
-                        color: Colors.white,
-                        icon: Icon(
-                          Icons.menu,
-                          size: 30,
-                        )),
-                  )
                 ],
               ),
-              TitleButton(),
-              TitleButton(),
-              TitleButton(),
-              TitleButton(),
-            ])));
-  }
-}
-
-class TitleButton extends StatelessWidget {
-  const TitleButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(vertical: 18),
-        child: ElevatedButton(
-            onPressed: () {},
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(MAIN_COLOR),
-              foregroundColor: WidgetStatePropertyAll(SIDE_COLOR),
-              elevation: WidgetStatePropertyAll(0),
-            ),
-            child: Row(children: [
-              SizedBox(
-                  width: 200, // 최대 너비 설정
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("제목"),
-                      Text(
-                        "내용입니다내용입니다co내용입니다내용입니다contextntext",
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    ],
-                  )),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                "10 min",
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              )
-            ])));
+              const SizedBox(height: 30)
+            ]);
+          },
+          items: List.generate(converstions.length, (index) {
+            return SidebarXItem(
+              icon: Icons.chat,
+              label: converstions[index].title,
+            );
+          }),
+        ),
+      ],
+    );
   }
 }

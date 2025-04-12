@@ -43,6 +43,7 @@ dependencies:
   ulid: ^2.0.1
   skeletons: ^0.0.3
   percent_indicator: ^4.2.4
+  sidebarx: ^0.17.1
 
 dev_dependencies:
   build_runner: ^2.4.15

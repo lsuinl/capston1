@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'percent_model.g.dart';
+part 'percent_model.g.dart';
 
 @JsonSerializable()
 class PercentModel {

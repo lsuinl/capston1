@@ -2,19 +2,24 @@ import 'package:capstone/component/const.dart';
 import 'package:capstone/main/component/input_field.dart';
 import 'package:capstone/main/component/input_result.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-//
-class Chatting extends StatefulWidget {
+import '../provider/chat_provider.dart';
+
+class Chatting extends ConsumerStatefulWidget {
   const Chatting({super.key});
 
+
   @override
-  State<Chatting> createState() => _ChattingState();
+  ConsumerState<Chatting> createState() => _ChattingState();
 }
 
-class _ChattingState extends State<Chatting> {
+class _ChattingState extends ConsumerState<Chatting> {
   final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
+    final chat = ref.watch(chatProvider);
 
     return Padding(
         padding: EdgeInsets.all(10),
@@ -23,15 +28,15 @@ class _ChattingState extends State<Chatting> {
             child: Column(children: [
               Expanded(
                   child: Scrollbar(
-                    controller: _scrollController,
-            thumbVisibility: true, // 항상 보이게 설정
-                child:  ListView(
-                    controller: _scrollController,
-                    children: [
-                MyChat(isMe: true, text: "안녕"),
-                MyChat(isMe: false, text: "dkfjdkfjdkfjdkfj"),
-                MyChat(isMe: false, text: "dkfjdkfjdkfjdkfj"),
-              ]))),
+                      controller: _scrollController,
+                      thumbVisibility: true, // 항상 보이게 설정
+                      child: ListView(
+                        controller: _scrollController,
+                        children: chat
+                            .map((value) =>
+                                MyChat(isMe: value.isMe, text: value.text))
+                            .toList(),
+                      ))),
               InputResult(),
               InputField(),
             ])));
@@ -48,7 +53,6 @@ class MyChat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
         alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-        // 왼쪽 정렬
         child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             child: Container(
