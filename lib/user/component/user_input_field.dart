@@ -4,10 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class UserInputField extends StatelessWidget {
   final TextEditingController controller;
   final String content;
+  final bool isSecure;
 
   const UserInputField({
     required this.content,
     required this.controller,
+    this.isSecure=false,
     super.key});
 
   @override
@@ -31,21 +33,15 @@ class UserInputField extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 5,
-                  offset: Offset(0, 2),
-                ),
-              ],
             ),
             child: TextField(
+              obscureText: isSecure,
               controller: controller,
               decoration: InputDecoration(
-                hintText: "$content를 입력하세요.",
+                hintText: "$content",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
+                  //borderSide: BorderSide.,
                 ),
                 filled: true,
                 fillColor: Colors.white,
