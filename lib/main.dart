@@ -1,5 +1,6 @@
 import 'package:capstone/component/const.dart';
 import 'package:capstone/main/main_screen.dart';
+import 'package:capstone/user/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
             ),
             debugShowCheckedModeBanner: false,
             home: Scaffold(
-              body: MainScreen(),
+              body: LoginScreen(),
             ),
           );
         });
