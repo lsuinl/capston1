@@ -8,14 +8,14 @@ part of 'conversations_model.dart';
 
 ConversationsModel _$ConversationsModelFromJson(Map<String, dynamic> json) =>
     ConversationsModel(
-      id: (json['id'] as num).toInt(),
+      conversationId: int.tryParse(json['conversationId'].toString()) ?? 0,
       title: json['title'] as String,
-      date: json['date'] as String,
+      createdAt: json['createdAt'] as String,
     );
 
 Map<String, dynamic> _$ConversationsModelToJson(ConversationsModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'conversationId': instance.conversationId,
       'title': instance.title,
-      'date': instance.date,
+      'createdAt': instance.createdAt,
     };

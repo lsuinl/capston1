@@ -23,7 +23,11 @@ abstract class ChatRepository {
   @Headers({'accessToken': 'true'})
   Future<ResponseModel> createConversation();
 
+  @GET('/conversations')
+  @Headers({'accessToken': 'true'})
+  Future<ResponseModel> getConversations();
+
   @POST('/chat/answer')
   @Headers({'accessToken': 'true'})
-  Future<ChatResponse> sendMessage(@Body() ChatRequest request);
+  Future<ResponseModel> sendMessage(@Body() ChatRequest request);
 } 

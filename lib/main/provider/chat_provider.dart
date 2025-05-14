@@ -7,17 +7,6 @@ import '../model/chat_model.dart';
 import '../model/conversations_model.dart';
 import '../repository/chat_repository.dart';
 
-class ChatNotifier extends StateNotifier<List<AnswerModel>>{
-  ChatNotifier() : super([]);
-
-  void addMessage(AnswerModel message){
-    state = [...state, message];
-  }
-
-  Future<void> fetchFromServer() async{
-    //서버에서 메세지 받아오기
-  }
-}
 
 final chatProvider = StateNotifierProvider<ChatStateNotifier, List<ChatMessage>>((ref) {
   final repository = ref.watch(chatRepositoryProvider);
@@ -68,11 +57,11 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
 
       // AI 응답 메시지 추가
       if (response.statusCode == 201) {
-
+        ChatData data =  ChatData.fromJson(response.data);
         final aiMessage = ChatMessage(
-          content: response.data.content,
+          content: data.content,
           isMe: false,
-          timestamp: response.data.timestamp,
+          timestamp: data.timestamp,
         );
         state = [...state, aiMessage];
       }

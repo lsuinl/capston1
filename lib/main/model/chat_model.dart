@@ -19,20 +19,6 @@ class ChatRequest {
 }
 
 @JsonSerializable()
-class ChatResponse {
-  final int statusCode;
-  final ChatData data;
-
-  ChatResponse({
-    required this.statusCode,
-    required this.data,
-  });
-
-  factory ChatResponse.fromJson(Map<String, dynamic> json) =>
-      _$ChatResponseFromJson(json);
-}
-
-@JsonSerializable()
 class ChatData {
   final String message;
   final String content;
@@ -65,29 +51,3 @@ class ChatMessage {
   
   Map<String, dynamic> toJson() => _$ChatMessageToJson(this);
 }
-
-@JsonSerializable()
-class ConversationResponse {
-  final int statusCode;
-  final ConversationData data;
-
-  ConversationResponse({
-    required this.statusCode,
-    required this.data,
-  });
-
-  factory ConversationResponse.fromJson(Map<String, dynamic> json) =>
-      _$ConversationResponseFromJson(json);
-}
-
-@JsonSerializable()
-class ConversationData {
-  final int conversationId;
-
-  ConversationData({
-    required this.conversationId,
-  });
-
-  factory ConversationData.fromJson(Map<String, dynamic> json) =>
-      _$ConversationDataFromJson(json);
-}  

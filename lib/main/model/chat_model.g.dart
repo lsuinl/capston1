@@ -17,17 +17,6 @@ Map<String, dynamic> _$ChatRequestToJson(ChatRequest instance) =>
       'conversationId': instance.conversationId,
     };
 
-ChatResponse _$ChatResponseFromJson(Map<String, dynamic> json) => ChatResponse(
-      statusCode: (json['statusCode'] as num).toInt(),
-      data: ChatData.fromJson(json['data'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$ChatResponseToJson(ChatResponse instance) =>
-    <String, dynamic>{
-      'statusCode': instance.statusCode,
-      'data': instance.data,
-    };
-
 ChatData _$ChatDataFromJson(Map<String, dynamic> json) => ChatData(
       message: json['message'] as String,
       content: json['content'] as String,
@@ -51,28 +40,4 @@ Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
       'content': instance.content,
       'isMe': instance.isMe,
       'timestamp': instance.timestamp,
-    };
-
-ConversationResponse _$ConversationResponseFromJson(
-        Map<String, dynamic> json) =>
-    ConversationResponse(
-      statusCode: (json['statusCode'] as num).toInt(),
-      data: ConversationData.fromJson(json['data'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$ConversationResponseToJson(
-        ConversationResponse instance) =>
-    <String, dynamic>{
-      'statusCode': instance.statusCode,
-      'data': instance.data,
-    };
-
-ConversationData _$ConversationDataFromJson(Map<String, dynamic> json) =>
-    ConversationData(
-      conversationId: (json['conversationId'] as num).toInt(),
-    );
-
-Map<String, dynamic> _$ConversationDataToJson(ConversationData instance) =>
-    <String, dynamic>{
-      'conversationId': instance.conversationId,
     };

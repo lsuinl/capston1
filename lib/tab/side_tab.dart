@@ -17,17 +17,11 @@ class SideTab extends ConsumerStatefulWidget {
 }
 
 class _SideTabState extends ConsumerState<SideTab> {
-  final List<String> tabTitles = [
-    "탭 1",
-    "탭 2",
-    "탭 3",
-    "탭 4",
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final converstionsNotifier = ref.watch(conversationsProvider.notifier);
-    final converstions = ref.watch(conversationsProvider);
+    final converstionsNotifier = ref.watch(ConversationProvider.notifier);
+    converstionsNotifier.fetchFromServer();
+    final converstions = ref.watch(ConversationProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -56,9 +50,9 @@ class _SideTabState extends ConsumerState<SideTab> {
                 child: IconButton(
                     onPressed: () => converstionsNotifier.addMessage(
                         ConversationsModel(
-                            id: 2,
+                            conversationId: 2,
                             title: 'gd',
-                            date: DateTime.now().toString())),
+                            createdAt: DateTime.now().toString())),
                     color: Colors.white,
                     icon: Icon(
                       Icons.add,

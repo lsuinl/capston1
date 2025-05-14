@@ -5,14 +5,14 @@ part 'conversations_model.g.dart';
 
 @JsonSerializable()
 class ConversationsModel {
-  final int id;
+  final int conversationId;
   final String title;
-  final String date;
+  final String createdAt;
 
   ConversationsModel({
-    required this.id,
+    required this.conversationId,
     required this.title,
-    required this.date,
+    required this.createdAt,
   });
 
   factory ConversationsModel.fromJson(Map<String,dynamic> json)
