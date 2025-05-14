@@ -11,7 +11,7 @@ const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
 final emulatorIp='10.0.2.2:3000';
 final simulatorIp='127.0.0.1:3000';
 
-String ip = "";
+String ip = "localhost:3000";
 
 List<String> answer = [
   '~20퍼센트\n구려용',
