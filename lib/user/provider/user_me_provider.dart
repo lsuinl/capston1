@@ -1,76 +1,105 @@
 import 'package:capstone/user/provider/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:capstone/user/model/auth_model.dart';
+import 'package:capstone/user/repository/auth_repository.dart';
 
 import '../../component/const.dart';
+import '../../component/response_model.dart';
 import '../../component/secure_storage.dart';
 import '../repository/user_me_repository.dart';
 
 
-final userMeProvider = StateNotifierProvider<UserMeStateNotifier,UserModelBase?>((ref){
-  final UserMeRepository = ref.watch(userMeRepositoryProvider);
-  final storage = ref.watch(secureStorageProvider);
+final userMeProvider = StateNotifierProvider<UserMeStateNotifier, UserMeState>((ref) {
+  return UserMeStateNotifier(ref.watch(authRepositoryProvider));
+});
 
-  return UserMeStateNotifier(
-      repository: UserMeRepository,
-      storage: storage
-  );
+class UserMeState {
+  final bool isLoading;
+  final String? error;
+  final String? email;
+
+  UserMeState({
+    this.isLoading = false,
+    this.error,
+    this.email,
+  });
+
+  UserMeState copyWith({
+    bool? isLoading,
+    String? error,
+    String? email,
+  }) {
+    return UserMeState(
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
+      email: email ?? this.email,
+    );
+  }
 }
 
-);
+class UserMeStateNotifier extends StateNotifier<UserMeState> {
+  final AuthRepository _authRepository;
 
-class UserMeStateNotifier extends StateNotifier<UserModelBase?> {
-  final UserMeRepository repository;
-  final FlutterSecureStorage storage;
+  UserMeStateNotifier(this._authRepository) : super(UserMeState());
 
-  UserMeStateNotifier({
-    required this.repository,
-    required this.storage,
-  }) : super(UserModelLoading()) {
-    //내 정보 가져오기
-    getMe();
+  Future<ResponseModel> login(AuthRequest request) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final response = await _authRepository.login(request);
+      state = state.copyWith(
+        isLoading: false,
+        email: request.email,
+      );
+      return response;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+      rethrow;
+    }
+  }
+
+  Future<ResponseModel> signup(AuthRequest request) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final response = await _authRepository.signup(request);
+      state = state.copyWith(
+        isLoading: false,
+        email: request.email,
+      );
+      return response;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+      rethrow;
+    }
   }
 
   Future<void> getMe() async {
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-    final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
-
-    if (refreshToken == null || accessToken == null) {
-      state = null;
-      return;
-    }
-    final resp = await repository.getMe();
-
-    state = resp;
-  }
-
-  Future<UserModelBase> login({
-    required String username,
-    required String password,
-  }) async {
-
+    state = state.copyWith(isLoading: true, error: null);
     try {
-      state = UserModelLoading();
-
-      final resp = await repository.getMe();
-      state = resp;
-
-      return resp;
+      state = state.copyWith(isLoading: false);
     } catch (e) {
-      state = UserModelError(message: "로그인에 실패하였습니다.");
-
-      return Future.value(state);
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
     }
   }
 
   Future<void> logout() async {
-    state = null; //바로 null로 만들어서 로그인페이지로 보내기
-
-    //두가지를 동시에 실행하여 await시키기. 각각 await로 삭제하는 것보다 조금 더 빠름
-    await Future.wait([
-      storage.delete(key: REFRESH_TOKEN_KEY),
-      storage.delete(key: ACCESS_TOKEN_KEY)
-    ]);
-
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+    }
   }
 }

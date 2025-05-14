@@ -3,28 +3,16 @@ import 'package:json_annotation/json_annotation.dart';
 part 'auth_model.g.dart';
 
 @JsonSerializable()
-class AuthResponse {
-  final int statusCode;
-  final AuthData data;
-
-  AuthResponse({
-    required this.statusCode,
-    required this.data,
-  });
-
-  factory AuthResponse.fromJson(Map<String, dynamic> json) =>
-      _$AuthResponseFromJson(json);
-}
-
-@JsonSerializable()
 class AuthData {
   final String message;
   final String? accessToken;
+  final String? refreshToken;
   final String? userId;
 
   AuthData({
     required this.message,
     this.accessToken,
+    this.refreshToken,
     this.userId,
   });
 

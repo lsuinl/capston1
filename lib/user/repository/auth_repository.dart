@@ -1,3 +1,4 @@
+import 'package:capstone/component/response_model.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
@@ -18,8 +19,8 @@ abstract class AuthRepository {
   factory AuthRepository(Dio dio, {String baseUrl}) = _AuthRepository;
 
   @POST('/login')
-  Future<AuthResponse> login(@Body() AuthRequest request);
+  Future<ResponseModel> login(@Body() AuthRequest request);
 
   @POST('/signup')
-  Future<AuthResponse> signup(@Body() AuthRequest request);
+  Future<ResponseModel> signup(@Body() AuthRequest request);
 } 

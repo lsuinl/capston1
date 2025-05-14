@@ -10,6 +10,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../component/const.dart';
 import '../component/default_layout.dart';
 import 'model/auth_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:capstone/component/secure_storage.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -28,69 +30,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
-  }
-
-  Future<void> handleAuth() async {
-    final authRepository = ref.read(authRepositoryProvider);
-    final userMeStateNotifier = ref.read(userMeProvider.notifier);
-
-    try {
-      final response = isLogin
-          ? await authRepository.login(
-              AuthRequest(
-                email: emailController.text,
-                password: passwordController.text,
-              ),
-            )
-          : await authRepository.signup(
-              AuthRequest(
-                email: emailController.text,
-                password: passwordController.text,
-              ),
-            );
-
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        if (response.data.accessToken != null) {
-          await userMeStateNotifier.login(
-            username: emailController.text,
-            password: passwordController.text,
-          );
-          if (mounted) {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (_) => const MainScreen(),
-              ),
-              (route) => false,
-            );
-          }
-        } else {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('토큰이 없습니다: ${response.data.message}'),
-              ),
-            );
-          }
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.data.message),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      print('Error during auth: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('오류가 발생했습니다.'),
-          ),
-        );
-      }
-    }
   }
 
   @override
@@ -151,5 +90,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ],
           ))
         ])));
+
+        
   }
+  Future<void> handleAuth() async {
+    final authRepository = ref.read(authRepositoryProvider);
+    final storage = ref.read(secureStorageProvider);
+    try {
+      final response = isLogin
+          ? await authRepository.login(
+              AuthRequest(
+                email: emailController.text,
+                password: passwordController.text,
+              ),
+            )
+          : await authRepository.signup(
+              AuthRequest(
+                email: emailController.text,
+                password: passwordController.text,
+              ),
+            );
+      AuthData authData = AuthData.fromJson(response.data);
+        if (response.statusCode == 201 && response.data != authData) {
+          await storage.write(key: ACCESS_TOKEN_KEY, value: authData.accessToken);
+          
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(authData.message)),
+            );
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => const MainScreen(),
+              ),
+              (route) => false,
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('오류가 발생했습니다: $e')),
+          );
+        }
+      }
+    }
+  
 }
