@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../model/answer_model.dart';
 import '../provider/chat_provider.dart';
 
 //메세지 입력, 전송기능, 수시로,

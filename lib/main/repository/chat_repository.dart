@@ -4,7 +4,6 @@ import 'package:retrofit/retrofit.dart';
 import 'package:capstone/main/model/chat_model.dart';
 import 'package:capstone/component/dio.dart';
 import 'package:capstone/component/const.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../component/response_model.dart';
 
@@ -19,14 +18,26 @@ final chatRepositoryProvider = Provider<ChatRepository>((ref) {
 abstract class ChatRepository {
   factory ChatRepository(Dio dio, {String baseUrl}) = _ChatRepository;
 
-  @POST('/conversations')
-  @Headers({'accessToken': 'true'})
-  Future<ResponseModel> createConversation();
-
+  //대화 목록 조회
   @GET('/conversations')
   @Headers({'accessToken': 'true'})
   Future<ResponseModel> getConversations();
 
+  //특정 대화 조회
+  @GET('/conversations/{conversationId}')
+  @Headers({'accessToken': 'true'})
+  Future<ResponseModel> getConversation(@Path('conversationId') int conversationId);
+  //대화 생성
+  @POST('/conversations')
+  @Headers({'accessToken': 'true'})
+  Future<ResponseModel> createConversation();
+
+  //대화 삭제
+  @DELETE('/conversations/{conversationId}')
+  @Headers({'accessToken': 'true'})
+  Future<ResponseModel> deleteConversations(@Path('conversationId') int conversationId);
+
+  //대화하기
   @POST('/chat/answer')
   @Headers({'accessToken': 'true'})
   Future<ResponseModel> sendMessage(@Body() ChatRequest request);

@@ -18,31 +18,21 @@ class ChatRequest {
   Map<String, dynamic> toJson() => _$ChatRequestToJson(this);
 }
 
-@JsonSerializable()
-class ChatData {
-  final String message;
-  final String content;
-  final String timestamp;
-
-  ChatData({
-    required this.message,
-    required this.content,
-    required this.timestamp,
-  });
-
-  factory ChatData.fromJson(Map<String, dynamic> json) =>
-      _$ChatDataFromJson(json);
+@JsonEnum(fieldRename: FieldRename.none)
+enum Sender {
+  user,
+  ai,
 }
 
 @JsonSerializable()
 class ChatMessage {
   final String content;
-  final bool isMe;
+  final Sender sender;
   final String timestamp;
 
   ChatMessage({
     required this.content,
-    required this.isMe,
+    required this.sender,
     required this.timestamp,
   });
 

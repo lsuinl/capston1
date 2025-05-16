@@ -4,15 +4,11 @@ part 'auth_model.g.dart';
 
 @JsonSerializable()
 class AuthData {
-  final String message;
   final String? accessToken;
-  final String? refreshToken;
   final String? userId;
 
   AuthData({
-    required this.message,
     this.accessToken,
-    this.refreshToken,
     this.userId,
   });
 

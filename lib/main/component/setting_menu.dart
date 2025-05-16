@@ -15,14 +15,9 @@ class _SettingMenuState extends State<SettingMenu> {
       shadowColor: SIDE_COLOR,
       color: SIDE_COLOR,
       position: PopupMenuPosition.under,
-      initialValue: "팝업메뉴 2입니다",
-
-      /// 펼쳤을 때 나오는 항목들 List<PopupMenuItem>
       itemBuilder: (context) {
         return [
           _menuItem("로그아웃"),
-          _menuItem("메뉴2"),
-          _menuItem("메뉴3"),
         ];
       },
       onSelected: (value) {},

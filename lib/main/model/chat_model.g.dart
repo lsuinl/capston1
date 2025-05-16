@@ -17,27 +17,20 @@ Map<String, dynamic> _$ChatRequestToJson(ChatRequest instance) =>
       'conversationId': instance.conversationId,
     };
 
-ChatData _$ChatDataFromJson(Map<String, dynamic> json) => ChatData(
-      message: json['message'] as String,
-      content: json['content'] as String,
-      timestamp: json['timestamp'] as String,
-    );
-
-Map<String, dynamic> _$ChatDataToJson(ChatData instance) => <String, dynamic>{
-      'message': instance.message,
-      'content': instance.content,
-      'timestamp': instance.timestamp,
-    };
-
 ChatMessage _$ChatMessageFromJson(Map<String, dynamic> json) => ChatMessage(
       content: json['content'] as String,
-      isMe: json['isMe'] as bool,
+      sender: $enumDecode(_$SenderEnumMap, json['sender']),
       timestamp: json['timestamp'] as String,
     );
 
 Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
     <String, dynamic>{
       'content': instance.content,
-      'isMe': instance.isMe,
+      'sender': _$SenderEnumMap[instance.sender]!,
       'timestamp': instance.timestamp,
     };
+
+const _$SenderEnumMap = {
+  Sender.user: 'user',
+  Sender.ai: 'ai',
+};

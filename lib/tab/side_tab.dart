@@ -6,11 +6,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:capstone/component/const.dart';
 
+import '../main/provider/chat_provider.dart';
+
 class SideTab extends ConsumerStatefulWidget {
   final SidebarXController controller;
   final VoidCallback onPressed;
+  final VoidCallback onStateChanged;
 
-  const SideTab({required this.controller, required this.onPressed, super.key});
+  const SideTab({
+    required this.controller, 
+    required this.onPressed, 
+    required this.onStateChanged,
+    super.key
+  });
 
   @override
   ConsumerState<SideTab> createState() => _SideTabState();
@@ -20,7 +28,6 @@ class _SideTabState extends ConsumerState<SideTab> {
   @override
   Widget build(BuildContext context) {
     final converstionsNotifier = ref.watch(ConversationProvider.notifier);
-    converstionsNotifier.fetchFromServer();
     final converstions = ref.watch(ConversationProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -40,6 +47,14 @@ class _SideTabState extends ConsumerState<SideTab> {
               color: SIDE_COLOR.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10),
             ),
+            iconTheme: IconThemeData(
+              color: Colors.white,
+              size: 20,
+            ),
+            selectedIconTheme: IconThemeData(
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           extendedTheme: SidebarXTheme(
             width: 400.w,
@@ -48,11 +63,11 @@ class _SideTabState extends ConsumerState<SideTab> {
             return Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: IconButton(
-                    onPressed: () => converstionsNotifier.addMessage(
-                        ConversationsModel(
-                            conversationId: 2,
-                            title: 'gd',
-                            createdAt: DateTime.now().toString())),
+                    onPressed: () {
+                      converstionsNotifier.addConversation();
+                      widget.controller.toggleExtended();
+                      widget.onStateChanged();
+                    },
                     color: Colors.white,
                     icon: Icon(
                       Icons.add,
@@ -88,8 +103,41 @@ class _SideTabState extends ConsumerState<SideTab> {
           },
           items: List.generate(converstions.length, (index) {
             return SidebarXItem(
-              icon: Icons.chat,
+              icon: Icons.chat_bubble_outline,
               label: converstions[index].title,
+              onTap: (){
+                ref.read(chatProvider.notifier).getConversation(converstions[index].conversationId);
+                widget.controller.toggleExtended();
+                widget.onStateChanged();
+              },
+              onLongPress: (){
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('삭제 확인'),
+                        content: Text('해당 항목을 삭제하시겠습니까?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // 아니오 눌렀을 때 닫기
+                            },
+                            child: Text('아니오'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              converstionsNotifier.removeConversation(converstions[index].conversationId);
+                              // 예: converstions.removeAt(index);
+                              Navigator.of(context).pop(); // 다이얼로그 닫기
+                            },
+                            child: Text('예'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+              },
+
             );
           }),
         ),

@@ -58,7 +58,7 @@ class _ChattingState extends ConsumerState<Chatting> {
                   itemBuilder: (context, index) {
                     final message = chat[index];
                     return MyChat(
-                      isMe: message.isMe,
+                      isMe: message.sender==Sender.user  ? true:false,
                       text: message.content,
                     );
                   },

@@ -1,14 +1,13 @@
 import 'package:capstone/component/response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../model/answer_model.dart';
 import '../model/chat_model.dart';
+import '../model/conversation_model.dart';
 import '../model/conversations_model.dart';
 import '../repository/chat_repository.dart';
 
-
-final chatProvider = StateNotifierProvider<ChatStateNotifier, List<ChatMessage>>((ref) {
+final chatProvider =
+    StateNotifierProvider<ChatStateNotifier, List<ChatMessage>>((ref) {
   final repository = ref.watch(chatRepositoryProvider);
   return ChatStateNotifier(repository: repository);
 });
@@ -22,17 +21,26 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
     required this.repository,
   }) : super([]);
 
+  Future<void> getConversation(int conversationId) async {
+    final response = await repository.getConversation(conversationId);
+    if (response.statusCode == 201) {
+      ConversationModel data = ConversationModel.fromJson(response.data);
+      conversationId = data.conversationId;
+      state = data.messages;
+    }
+  }
+
   Future<void> sendMessage(String message) async {
     //첫 대화인 경우, 새로운 대화창 생성하기
-    if(conversationId == -1) {
+    if (conversationId == -1) {
       try {
         final response = await repository.createConversation();
-        if(response.statusCode == 201) {
+        if (response.statusCode == 201) {
           conversationId = int.parse(response.data['conversationId']);
         } else {
           throw Exception('대화방 생성에 실패했습니다.');
         }
-      } catch(e) {
+      } catch (e) {
         print('대화방 생성에 실패했습니다. : $e');
         rethrow;
       }
@@ -42,7 +50,7 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
       // 사용자 메시지 추가
       final userMessage = ChatMessage(
         content: message,
-        isMe: true,
+        sender: Sender.user,
         timestamp: DateTime.now().toIso8601String(),
       );
       state = [...state, userMessage];
@@ -57,20 +65,15 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
 
       // AI 응답 메시지 추가
       if (response.statusCode == 201) {
-        ChatData data =  ChatData.fromJson(response.data);
-        final aiMessage = ChatMessage(
-          content: data.content,
-          isMe: false,
-          timestamp: data.timestamp,
-        );
-        state = [...state, aiMessage];
+        ChatMessage data = ChatMessage.fromJson(response.data);
+        state = [...state, data];
       }
     } catch (e) {
       print('Error sending message: $e');
       // 에러 메시지 추가
       final errorMessage = ChatMessage(
         content: '메시지 전송 중 오류가 발생했습니다.',
-        isMe: false,
+        sender: Sender.user,
         timestamp: DateTime.now().toIso8601String(),
       );
       state = [...state, errorMessage];

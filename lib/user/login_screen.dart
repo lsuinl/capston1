@@ -116,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(authData.message)),
+              SnackBar(content: Text(response.message)),
             );
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(

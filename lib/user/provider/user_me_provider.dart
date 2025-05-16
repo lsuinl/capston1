@@ -1,14 +1,7 @@
-import 'package:capstone/user/provider/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:capstone/user/model/auth_model.dart';
 import 'package:capstone/user/repository/auth_repository.dart';
-
-import '../../component/const.dart';
 import '../../component/response_model.dart';
-import '../../component/secure_storage.dart';
-import '../repository/user_me_repository.dart';
-
 
 final userMeProvider = StateNotifierProvider<UserMeStateNotifier, UserMeState>((ref) {
   return UserMeStateNotifier(ref.watch(authRepositoryProvider));
