@@ -1,7 +1,6 @@
 import 'package:capstone/main/main_screen.dart';
 import 'package:capstone/user/component/user_button.dart';
 import 'package:capstone/user/component/user_input_field.dart';
-import 'package:capstone/user/provider/user_me_provider.dart';
 import 'package:capstone/user/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

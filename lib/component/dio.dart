@@ -1,11 +1,11 @@
 import 'package:capstone/component/const.dart';
 import 'package:capstone/component/secure_storage.dart';
+import 'package:capstone/user/login_screen.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod/riverpod.dart';
-
-import '../user/provider/user_me_provider.dart';
 
 //dio가 항상 provider을 통해 데이터를 가져옴
 final dioProvider = Provider(( ref) {
@@ -71,11 +71,22 @@ class CustomInterceptor extends Interceptor {
     print("[ERR] Headers: ${err.response?.headers}");
     print("[ERR] Body: ${err.response?.data}");
 
-    final isStatus401 = err.response?.statusCode == 401;
+    final isStatus401 = err.response?.statusCode == 403;
     final isPathRefresh = err.requestOptions.path ==
         '/auth/token'; //토큰 재발급 과정에서의 에러인지 체크.(리프레시 토큰 자체의문제
 
-    if (isStatus401 && !isPathRefresh)
-      ref.read(userMeProvider.notifier).logout();
+    if (isStatus401 && !isPathRefresh) {
+      await storage.delete(key: ACCESS_TOKEN_KEY);
+      
+      // 로그인 화면으로 리다이렉트
+      if (navigatorKey.currentContext != null) {
+        Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
+      }
+    }
   }
 }
+
+final navigatorKey = GlobalKey<NavigatorState>();

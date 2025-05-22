@@ -32,6 +32,5 @@ class UserButton extends StatelessWidget {
           child: Text(title),
         ),
     ));
-
   }
 }
