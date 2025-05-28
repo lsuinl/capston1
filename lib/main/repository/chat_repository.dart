@@ -6,6 +6,7 @@ import 'package:capstone/component/dio.dart';
 import 'package:capstone/component/const.dart';
 
 import '../../component/response_model.dart';
+import '../model/percent_model.dart';
 
 part 'chat_repository.g.dart';
 
@@ -41,4 +42,9 @@ abstract class ChatRepository {
   @POST('/chat/answer')
   @Headers({'accessToken': 'true'})
   Future<ResponseModel> sendMessage(@Body() ChatRequest request);
+
+  //대화하기
+  @POST('/chat/probability')
+  @Headers({'accessToken': 'true'})
+  Future<ResponseModel> checkprobability(@Body() PercentRequest request);
 } 

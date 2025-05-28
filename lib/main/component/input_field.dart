@@ -1,3 +1,4 @@
+import 'package:capstone/main/provider/percent_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/chat_provider.dart';
@@ -57,6 +58,9 @@ class _InputFieldState extends ConsumerState<InputField> {
               icon: Icon(Icons.send, color: Colors.black),
               onPressed: _handleSubmit,
             ),
+            icon: IconButton(onPressed: (){
+              ref.read(PercentProvider.notifier).updateNumber(controller.text);
+            }, icon: Icon(Icons.ac_unit,))
           ),
           onSubmitted: (_) => _handleSubmit(),
         ),

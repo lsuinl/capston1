@@ -112,7 +112,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       AuthData authData = AuthData.fromJson(response.data);
         if (response.statusCode == 201 && response.data != authData) {
           await storage.write(key: ACCESS_TOKEN_KEY, value: authData.accessToken);
-          
+          await storage.write(key: USER_ID, value: authData.userId);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(response.message)),

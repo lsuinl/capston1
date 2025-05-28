@@ -6,7 +6,7 @@ Color SIDE_COLOR = Color(0xFFECE6F0);
 
 // 토큰 관련 상수
 const String ACCESS_TOKEN_KEY = 'access_token';
-const String REFRESH_TOKEN_KEY = 'refresh_token';
+const String USER_ID = 'refresh_token';
 
 //localhost
 final emulatorIp='10.0.2.2:3000';

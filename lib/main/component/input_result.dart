@@ -1,3 +1,4 @@
+import 'package:capstone/main/provider/percent_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -10,6 +11,8 @@ class InputResult extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final percent = ref.watch(PercentProvider);
+
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Container(
@@ -27,19 +30,19 @@ class InputResult extends ConsumerWidget {
                   child:
                   LinearPercentIndicator(
                     lineHeight: 8.0,
-                    percent: 0.8,
+                    percent: percent/100,
                     progressColor: Colors.green,
                     barRadius: Radius.circular(20),
                   )),
                   Text(
-                    "주체성 80%",
+                    "주체성 ${percent/100}%",
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
                   ),
             Align( // ← 텍스트만 왼쪽 정렬
               alignment: Alignment.centerLeft,
               child:
               Text(
-                    "아주 좋은 질문이에요!\n사용자의 주체성이 높을 수록 AI는 더욱 만족스러운 답변을 해줍니다.",
+                  answer[(percent/20).toInt()],
                     style: TextStyle(color: Colors.black),
                   ))
                 ],
