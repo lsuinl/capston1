@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:capstone/main/provider/percent_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,9 +15,18 @@ class InputField extends ConsumerStatefulWidget {
 
 class _InputFieldState extends ConsumerState<InputField> {
   final TextEditingController controller = TextEditingController();
+  Timer? _debounce;
+  String _previousText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _startPeriodicChecker();
+  }
 
   @override
   void dispose() {
+    _debounce?.cancel();
     controller.dispose();
     super.dispose();
   }
@@ -67,4 +78,16 @@ class _InputFieldState extends ConsumerState<InputField> {
       ),
     );
   }
+
+  void _startPeriodicChecker() {
+    _debounce?.cancel(); // 기존 타이머 정리
+    _debounce = Timer.periodic(Duration(seconds: 1), (_) {
+      final currentText = controller.text;
+      if (currentText != _previousText && currentText.isNotEmpty) {
+        _previousText = currentText;
+        ref.read(PercentProvider.notifier).updateNumber(currentText);
+      }
+    });
+  }
+
 }

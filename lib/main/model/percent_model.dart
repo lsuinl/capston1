@@ -4,29 +4,9 @@ part 'percent_model.g.dart';
 
 @JsonSerializable()
 class PercentModel {
-  final int standard_1;
-  final int standard_2;
-  final int standard_3;
-  final int standard_4;
-  final int standard_5;
-  final int standard_6;
-  final int standard_7;
-  final int standard_8;
-  final int standard_9;
-  final int standard_10;
   final int total_score;
 
   PercentModel({
-    required this.standard_1,
-    required this.standard_2,
-    required this.standard_3,
-    required this.standard_4,
-    required this.standard_5,
-    required this.standard_6,
-    required this.standard_7,
-    required this.standard_8,
-    required this.standard_9,
-    required this.standard_10,
     required this.total_score,
   });
 

@@ -1,10 +1,9 @@
+import 'package:capstone/component/data_utils.dart';
 import 'package:capstone/main/provider/percent_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../component/const.dart';
-
-//퍼센트 결과관련..
 
 class InputResult extends ConsumerWidget {
   const InputResult({super.key});
@@ -31,18 +30,18 @@ class InputResult extends ConsumerWidget {
                   LinearPercentIndicator(
                     lineHeight: 8.0,
                     percent: percent/100,
-                    progressColor: Colors.green,
+                    progressColor: DataUtils.getColorFromPercentageHSV(percent.toDouble()),
                     barRadius: Radius.circular(20),
                   )),
                   Text(
-                    "주체성 ${percent/100}%",
+                    "주체성: ${percent}%",
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
                   ),
             Align( // ← 텍스트만 왼쪽 정렬
               alignment: Alignment.centerLeft,
               child:
               Text(
-                  answer[(percent/20).toInt()],
+                  answer[percent==0?0: (percent/20+1).toInt()],
                     style: TextStyle(color: Colors.black),
                   ))
                 ],

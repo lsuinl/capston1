@@ -3,6 +3,7 @@ import 'package:capstone/main/component/input_field.dart';
 import 'package:capstone/main/component/input_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../model/chat_model.dart';
 import '../provider/chat_provider.dart';
@@ -36,6 +37,7 @@ class _ChattingState extends ConsumerState<Chatting> {
   @override
   Widget build(BuildContext context) {
     final chat = ref.watch(chatProvider);
+    final isLoading = ref.watch(chatProvider.notifier).isLoading;
 
     // 채팅이 추가될 때마다 스크롤을 아래로 이동
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,16 +55,40 @@ class _ChattingState extends ConsumerState<Chatting> {
                 controller: _scrollController,
                 thumbVisibility: true,
                 child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: chat.length,
-                  itemBuilder: (context, index) {
-                    final message = chat[index];
-                    return MyChat(
-                      isMe: message.sender==Sender.user  ? true:false,
-                      text: message.content,
-                    );
-                  },
-                ),
+                    controller: _scrollController,
+                    itemCount: chat.length,
+                    itemBuilder: (context, index) {
+                      final message = chat[index];
+                      if (index == chat.length - 1 && isLoading) {
+                        return Column(
+                          children: [
+                            MyChat(
+                              isMe: message.sender == Sender.user,
+                              text: message.content,
+                            ),
+                            Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                    padding: EdgeInsets.all(30),
+                                    child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        // ← 필요한 만큼만 너비
+                                        children: [
+                                          SpinKitThreeBounce(
+                                            color: Colors.white,
+                                            size: 30,
+                                          )
+                                        ])))
+                          ],
+                        );
+                      }
+                      else {
+                        return MyChat(
+                          isMe: message.sender == Sender.user,
+                          text: message.content,
+                        );
+                      }
+                    }),
               ),
             ),
             InputResult(),
@@ -92,7 +118,7 @@ class MyChat extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Container(
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Text(
               text,
               style: TextStyle(color: isMe ? Colors.white : Colors.black),

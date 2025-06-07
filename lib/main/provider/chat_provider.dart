@@ -20,6 +20,8 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
   ChatStateNotifier({
     required this.repository,
   }) : super([]);
+  bool isLoading = false;
+
 
   Future<void> getConversation(int conversationId) async {
     final response = await repository.getConversation(conversationId);
@@ -54,7 +56,8 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
         timestamp: DateTime.now().toIso8601String(),
       );
       state = [...state, userMessage];
-
+      isLoading = true;
+      state = [...state];
       // 서버에 메시지 전송
       final response = await repository.sendMessage(
         ChatRequest(
@@ -65,10 +68,12 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
 
       // AI 응답 메시지 추가
       if (response.statusCode == 201) {
+        isLoading = false;
         ChatMessage data = ChatMessage.fromJson(response.data);
         state = [...state, data];
       }
     } catch (e) {
+      isLoading = false;
       print('Error sending message: $e');
       // 에러 메시지 추가
       final errorMessage = ChatMessage(
