@@ -25,7 +25,7 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
 
   Future<void> getConversation(int conversationId) async {
     final response = await repository.getConversation(conversationId);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201|| response.statusCode==200) {
       ConversationModel data = ConversationModel.fromJson(response.data);
       conversationId = data.conversationId;
       state = data.messages;
@@ -37,7 +37,7 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
     if (conversationId == -1) {
       try {
         final response = await repository.createConversation();
-        if (response.statusCode == 201) {
+        if (response.statusCode == 201|| response.statusCode==200) {
           conversationId = int.parse(response.data['conversationId']);
         } else {
           throw Exception('대화방 생성에 실패했습니다.');
@@ -67,7 +67,7 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
       );
 
       // AI 응답 메시지 추가
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201|| response.statusCode==200) {
         isLoading = false;
         ChatMessage data = ChatMessage.fromJson(response.data);
         state = [...state, data];

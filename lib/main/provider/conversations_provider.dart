@@ -25,7 +25,7 @@ class ConversationNotifier extends StateNotifier<List<ConversationsModel>>{
 
   void addConversation() async {
     ResponseModel response = await repository.createConversation();
-    if(response.statusCode == 201) {
+    if(response.statusCode == 201|| response.statusCode==200) {
       ConversationsModel conversation = ConversationsModel.fromJson(response.data);
       await ref.read(chatProvider.notifier).getConversation(conversation.conversationId);
     }
@@ -33,13 +33,13 @@ class ConversationNotifier extends StateNotifier<List<ConversationsModel>>{
 
   void removeConversation(int id) async {
     ResponseModel response = await repository.deleteConversations(id);
-    if(response.statusCode ==200)
+    if(response.statusCode ==200|| response.statusCode==201)
       state = state.where((item) => item.conversationId != id).toList();
   }
 
   Future<void> fetchFromServer() async{
     ResponseModel response= await repository.getConversations();
-    if(response.statusCode == 201) {
+    if(response.statusCode == 201|| response.statusCode==200) {
       List<ConversationsModel> datas = (response.data['conversations'] as List)
           .map((json) => ConversationsModel.fromJson(json))
           .toList();

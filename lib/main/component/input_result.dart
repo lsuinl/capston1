@@ -42,7 +42,7 @@ class InputResult extends ConsumerWidget {
               child:
               Text(
                   answer[percent==0?0: (percent/20+1).toInt()],
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(fontSize: 15,color: Colors.black87,fontWeight: FontWeight.w700),
                   ))
                 ],
               )),

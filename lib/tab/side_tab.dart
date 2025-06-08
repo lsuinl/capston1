@@ -13,12 +13,11 @@ class SideTab extends ConsumerStatefulWidget {
   final VoidCallback onPressed;
   final VoidCallback onStateChanged;
 
-  const SideTab({
-    required this.controller, 
-    required this.onPressed, 
-    required this.onStateChanged,
-    super.key
-  });
+  const SideTab(
+      {required this.controller,
+      required this.onPressed,
+      required this.onStateChanged,
+      super.key});
 
   @override
   ConsumerState<SideTab> createState() => _SideTabState();
@@ -103,14 +102,18 @@ class _SideTabState extends ConsumerState<SideTab> {
           },
           items: List.generate(converstions.length, (index) {
             return SidebarXItem(
-              icon: Icons.chat_bubble_outline,
-              label: converstions[index].title,
-              onTap: (){
-                ref.read(chatProvider.notifier).getConversation(converstions[index].conversationId);
-                widget.controller.toggleExtended();
+              icon: Icons.chat,
+              label: '   ${converstions[index].title}',
+              onTap: () {
+              //  if (widget.controller.extended)
+                //  widget.controller.toggleExtended();
+                ref
+                    .read(chatProvider.notifier)
+                    .getConversation(converstions[index].conversationId);
                 widget.onStateChanged();
               },
-              onLongPress: (){
+              onLongPress: () {
+                if (widget.controller.extended) {
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -126,9 +129,24 @@ class _SideTabState extends ConsumerState<SideTab> {
                           ),
                           TextButton(
                             onPressed: () {
-                              converstionsNotifier.removeConversation(converstions[index].conversationId);
-                              // 예: converstions.removeAt(index);
+                              converstionsNotifier.removeConversation(
+                                  converstions[index].conversationId);
+                              converstions.removeAt(index);
                               Navigator.of(context).pop(); // 다이얼로그 닫기
+
+                              Future.microtask(() {
+                                final updatedList =
+                                    ref.read(ConversationProvider);
+                                if (updatedList.isEmpty) return;
+                                final newIndex = index > 0 ? index - 1 : 0;
+
+                                final newConversation = updatedList[newIndex];
+                                ref.read(chatProvider.notifier).getConversation(
+                                    newConversation.conversationId);
+                                widget.controller
+                                    .selectIndex(newIndex);
+                                widget.onStateChanged();
+                              });
                             },
                             child: Text('예'),
                           ),
@@ -136,8 +154,8 @@ class _SideTabState extends ConsumerState<SideTab> {
                       );
                     },
                   );
+                }
               },
-
             );
           }),
         ),

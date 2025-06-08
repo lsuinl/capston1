@@ -43,8 +43,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final converstionsNotifier = ref.watch(ConversationProvider.notifier);
-    converstionsNotifier.fetchFromServer();
-
+      converstionsNotifier.fetchFromServer();
     return DefaultLayout(
         backgroundColor: MAIN_COLOR,
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
