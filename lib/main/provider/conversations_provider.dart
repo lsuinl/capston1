@@ -27,6 +27,7 @@ class ConversationNotifier extends StateNotifier<List<ConversationsModel>>{
     ResponseModel response = await repository.createConversation();
     if(response.statusCode == 201|| response.statusCode==200) {
       ConversationsModel conversation = ConversationsModel.fromJson(response.data);
+      state = [conversation, ...state];
       await ref.read(chatProvider.notifier).getConversation(conversation.conversationId);
     }
   }
