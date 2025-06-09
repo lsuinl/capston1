@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../component/const.dart';
 import '../component/default_layout.dart';
+import '../component/response_model.dart';
 import 'model/auth_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:capstone/component/secure_storage.dart';
@@ -89,13 +90,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ],
           ))
         ])));
-
-        
   }
+
   Future<void> handleAuth() async {
     final authRepository = ref.read(authRepositoryProvider);
     final storage = ref.read(secureStorageProvider);
     try {
+      print('??');
       final response = isLogin
           ? await authRepository.login(
               AuthRequest(
@@ -109,29 +110,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 password: passwordController.text,
               ),
             );
-      AuthData authData = AuthData.fromJson(response.data);
+      print("출력7");
+      if (response.data != null && response.message != null) {
+        AuthData authData = AuthData.fromJson(response.data!);
         if (response.statusCode == 201 && response.data != authData) {
-          await storage.write(key: ACCESS_TOKEN_KEY, value: authData.accessToken);
-          await storage.write(key: USER_ID, value: authData.userId);
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(response.message)),
-            );
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (_) => const MainScreen(),
-              ),
-              (route) => false,
-            );
-          }
-        }
-      } catch (e) {
-        if (mounted) {
+          await storage.write(
+              key: ACCESS_TOKEN_KEY, value: authData.accessToken ?? "");
+          await storage.write(key: USER_ID, value: authData.userId ?? "");
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('오류가 발생했습니다: $e')),
+            SnackBar(content: Text(response.message!)),
+          );
+          print("출력7");
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (_) => const MainScreen(),
+            ),
+            (route) => false,
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response.message!)),
           );
         }
       }
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(isLogin
+                ? '로그인에 실패하였습니다. 아이디와 비밀번호를 다시 확인해주세요.'
+                : '잘못된 정보를 입력하였습니다. 다시 입력해주세요.')),
+      );
+      throw e;
     }
-  
+  }
 }

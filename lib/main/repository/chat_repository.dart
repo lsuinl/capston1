@@ -12,7 +12,7 @@ part 'chat_repository.g.dart';
 
 final chatRepositoryProvider = Provider<ChatRepository>((ref) {
   final dio = ref.watch(dioProvider);
-  return ChatRepository(dio,baseUrl: 'http://$ip/api');
+  return ChatRepository(dio,baseUrl: 'https://$ip/api');
 });
 
 @RestApi()

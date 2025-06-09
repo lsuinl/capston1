@@ -23,8 +23,8 @@ class PercentStateNotifier extends StateNotifier<int>{
     PercentRequest quest = PercentRequest(userId: userId!, question: question);
 
     ResponseModel response = await repository.checkprobability(quest);
-    if(response.statusCode == 201) {
-      PercentModel conversation = PercentModel.fromJson(response.data);
+    if(response.statusCode == 201&& response.data!=null) {
+      PercentModel conversation = PercentModel.fromJson(response.data!);
       state = conversation.total_score;
     }
   }

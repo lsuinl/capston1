@@ -64,29 +64,28 @@ class CustomInterceptor extends Interceptor {
   //3. 에러 났을 때
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    //401: 토큰 에러(status code)
-    //토큰 재발급 시도 후, 새로운 토큰으로 요청하기
     print("[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}");
     print("[ERR] Status Code: ${err.response?.statusCode}");
     print("[ERR] Headers: ${err.response?.headers}");
     print("[ERR] Body: ${err.response?.data}");
 
-    final isStatus401 = err.response?.statusCode == 403;
-    final isPathRefresh = err.requestOptions.path ==
-        '/auth/token'; //토큰 재발급 과정에서의 에러인지 체크.(리프레시 토큰 자체의문제
+    final isStatus403 = err.response?.statusCode == 403;
+    final isPathRefresh = err.requestOptions.path == '/auth/token';
 
-    if (isStatus401 && !isPathRefresh) {
+    if (isStatus403 && !isPathRefresh) {
       await storage.delete(key: ACCESS_TOKEN_KEY);
-      
-      // 로그인 화면으로 리다이렉트
+
       if (navigatorKey.currentContext != null) {
         Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
+              (route) => false,
         );
       }
     }
+
+    // 반드시 호출: 에러를 다음으로 넘기기
+    handler.next(err);
   }
 }
 
-final navigatorKey = GlobalKey<NavigatorState>();
+  final navigatorKey = GlobalKey<NavigatorState>();

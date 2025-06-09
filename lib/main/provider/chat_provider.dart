@@ -26,29 +26,32 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
   Future<void> getConversation(int conversationId) async {
     final response = await repository.getConversation(conversationId);
     if (response.statusCode == 201|| response.statusCode==200) {
-      ConversationModel data = ConversationModel.fromJson(response.data);
-      conversationId = data.conversationId;
-      state = data.messages;
+      if(response.data!=null) {
+        ConversationModel data = ConversationModel.fromJson(response.data!);
+        conversationId = data.conversationId;
+        state = data.messages;
+      }
     }
   }
 
   Future<void> sendMessage(String message) async {
     //첫 대화인 경우, 새로운 대화창 생성하기
     if (conversationId == -1) {
-      try {
+     // try {
         final response = await repository.createConversation();
         if (response.statusCode == 201|| response.statusCode==200) {
-          conversationId = int.parse(response.data['conversationId']);
+          if(response.data!=null)
+          conversationId = int.parse(response.data!['conversationId']);
         } else {
           throw Exception('대화방 생성에 실패했습니다.');
         }
-      } catch (e) {
-        print('대화방 생성에 실패했습니다. : $e');
-        rethrow;
-      }
+    //  } catch (e) {
+    //    print('대화방 생성에 실패했습니다. : $e');
+    //    rethrow;
+    //  }
     }
 
-    try {
+   // try {
       // 사용자 메시지 추가
       final userMessage = ChatMessage(
         content: message,
@@ -69,19 +72,21 @@ class ChatStateNotifier extends StateNotifier<List<ChatMessage>> {
       // AI 응답 메시지 추가
       if (response.statusCode == 201|| response.statusCode==200) {
         isLoading = false;
-        ChatMessage data = ChatMessage.fromJson(response.data);
+        if(response.data!=null){
+        ChatMessage data = ChatMessage.fromJson(response.data!);
         state = [...state, data];
+        }
       }
-    } catch (e) {
-      isLoading = false;
-      print('Error sending message: $e');
-      // 에러 메시지 추가
-      final errorMessage = ChatMessage(
-        content: '메시지 전송 중 오류가 발생했습니다.',
-        sender: Sender.user,
-        timestamp: DateTime.now().toIso8601String(),
-      );
-      state = [...state, errorMessage];
-    }
+    // } catch (e) {
+    //   isLoading = false;
+    //   print('Error sending message: $e');
+    //   // 에러 메시지 추가
+    //   final errorMessage = ChatMessage(
+    //     content: '메시지 전송 중 오류가 발생했습니다.',
+    //     sender: Sender.user,
+    //     timestamp: DateTime.now().toIso8601String(),
+    //   );
+    //   state = [...state, errorMessage];
+    // }
   }
 }

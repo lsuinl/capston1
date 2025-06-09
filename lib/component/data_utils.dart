@@ -8,7 +8,7 @@ import 'const.dart';
 class DataUtils{
 
   static pathToUrl(String value){
-    return "http://$ip$value}";
+    return "https://$ip$value}";
   }
 
   static listPathsToUrls(List paths){

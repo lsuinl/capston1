@@ -26,9 +26,13 @@ class ConversationNotifier extends StateNotifier<List<ConversationsModel>>{
   void addConversation() async {
     ResponseModel response = await repository.createConversation();
     if(response.statusCode == 201|| response.statusCode==200) {
-      ConversationsModel conversation = ConversationsModel.fromJson(response.data);
-      state = [conversation, ...state];
-      await ref.read(chatProvider.notifier).getConversation(conversation.conversationId);
+      if(response.data!=null) {
+        ConversationsModel conversation = ConversationsModel.fromJson(
+            response.data!);
+        state = [conversation, ...state];
+        await ref.read(chatProvider.notifier).getConversation(
+            conversation.conversationId);
+      }
     }
   }
 
@@ -41,10 +45,13 @@ class ConversationNotifier extends StateNotifier<List<ConversationsModel>>{
   Future<void> fetchFromServer() async{
     ResponseModel response= await repository.getConversations();
     if(response.statusCode == 201|| response.statusCode==200) {
-      List<ConversationsModel> datas = (response.data['conversations'] as List)
-          .map((json) => ConversationsModel.fromJson(json))
-          .toList();
-      state=datas;
+      if(response.data!=null) {
+        List<ConversationsModel> datas = (response
+            .data!['conversations'] as List)
+            .map((json) => ConversationsModel.fromJson(json))
+            .toList();
+        state = datas;
+      }
     }
   }
 }

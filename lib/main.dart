@@ -63,3 +63,44 @@ class _MyAppState extends ConsumerState<MyApp> {
         });
   }
 }
+
+class SplashScreen extends ConsumerStatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuth();
+  }
+
+  Future<void> _checkAuth() async {
+   // final storage = ref.read(secureStorageProvider);
+    final token =ACCESS_TOKEN_KEY;
+    //await storage.read(key: ACCESS_TOKEN_KEY);
+
+
+    // 로그인 여부에 따라 라우팅
+    if (!mounted) return;
+    if (token == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const MainScreen()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(child: CircularProgressIndicator()), // 로딩 화면
+    );
+  }
+}

@@ -8,7 +8,7 @@ Color SIDE_COLOR = Color(0xFFECE6F0);
 const String ACCESS_TOKEN_KEY = 'access_token';
 const String USER_ID = 'refresh_token';
 
-String ip = "52.79.81.133:80";
+String ip = "dasomworld.click";
 
 List<String> answer = [
   '자유롭게 질문해보세요!\n여러분의 주체성 향상을 위한 코멘트를 드릴게요!',

@@ -81,8 +81,11 @@ class _InputFieldState extends ConsumerState<InputField> {
 
   void _startPeriodicChecker() {
     _debounce?.cancel(); // 기존 타이머 정리
-    _debounce = Timer.periodic(Duration(seconds: 1), (_) {
+    _debounce = Timer.periodic(Duration(seconds: 2), (_) {
       final currentText = controller.text;
+      if(currentText.isEmpty){
+        ref.read(PercentProvider.notifier).state=0;
+      }
       if (currentText != _previousText && currentText.isNotEmpty) {
         _previousText = currentText;
         ref.read(PercentProvider.notifier).updateNumber(currentText);
