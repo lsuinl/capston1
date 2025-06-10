@@ -33,6 +33,7 @@ class _InputFieldState extends ConsumerState<InputField> {
 
   void _handleSubmit() {
     if (controller.text.isNotEmpty) {
+      ref.read(PercentProvider.notifier).state=0;
       ref.read(chatProvider.notifier).sendMessage(controller.text);
       controller.clear();
     }
@@ -81,7 +82,7 @@ class _InputFieldState extends ConsumerState<InputField> {
 
   void _startPeriodicChecker() {
     _debounce?.cancel(); // 기존 타이머 정리
-    _debounce = Timer.periodic(Duration(seconds: 2), (_) {
+    _debounce = Timer.periodic(Duration(milliseconds: 1300), (_) {
       final currentText = controller.text;
       if(currentText.isEmpty){
         ref.read(PercentProvider.notifier).state=0;
